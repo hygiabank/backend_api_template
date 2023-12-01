@@ -1,0 +1,10 @@
+aerich
+fastapi
+uvicorn
+python-multipart
+pydantic
+pydantic-settings
+tortoise-orm[asyncpg]
+python-jose[cryptography]
+bcrypt==4.0.1
+passlib
