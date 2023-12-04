@@ -10,3 +10,4 @@ class User(Model):
     age = fields.IntField(null=True)
     username = fields.CharField(unique=True, max_length=20)
     password = fields.CharField(max_length=128)
+    creation_timestamp = fields.FloatField(null=True)

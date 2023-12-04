@@ -1,5 +1,14 @@
 # Backend System Setup and Update
 
+## Task Julia Remus
+
+Supposing that this controls a team, it could be handled the average time in the company.
+
+Another hypothesis is to assign a label to each person, like: "student", "self-employeed", "CLT"
+and retrieve some aggregation from that.
+
+I don't know exactly how much work you need to me to do..... so I only calculate average age, accumulated users and new users per time.
+
 ## Overview
 
 This README outlines the commands necessary to start and update a backend system composed of a FastAPI application and a PostgreSQL database.

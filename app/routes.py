@@ -1,7 +1,7 @@
 from fastapi import FastAPI, APIRouter, Depends, Response, status
 from app.security import set_token_cookie, revoke_token_cookie, get_current_user, hash_password, TokenData
-from app.controllers import read_users, read_user, create_user, update_user, delete_user, authenticate
-from app.schemas import CreateUserInput, CreateUserOutput
+from app.controllers import read_users, read_user, create_user, update_user, delete_user, return_user_statistics, authenticate
+from app.schemas import CreateUserInput, CreateUserOutput, StatisticsOuput
 
 def create_login_router() -> APIRouter:
     router = APIRouter()
@@ -47,8 +47,21 @@ def create_rest_router() -> APIRouter:
     async def delete(user_id: str = Depends(get_current_user)) -> None:
         await delete_user(id=user_id)
 
-    return router
+    @router.get("/users-statistics", response_model=StatisticsOuput, status_code=status.HTTP_200_OK)
+    async def get_user_stats(resample_time: int) -> dict:
+        
+        """
+        Get User Statistics
 
+        Param:
+            resample_time (int): resample time to accumulate and show new users, in ms
+        Output:
+            dict: dict contaning StatisticsOuput: new_users_per_time, user_per_time_acc, average_user_age
+        """
+
+        return await return_user_statistics(resample_time=resample_time)
+
+    return router
 
 def init_routes(app: FastAPI):
     user_crud_router = create_rest_router()

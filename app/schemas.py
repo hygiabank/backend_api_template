@@ -5,6 +5,7 @@ class CreateUserInput(BaseModel):
     age: int
     username: str
     password: str
+    creation_timestamp: float
 
 class CreateUserOutput(BaseModel):
     id: int
@@ -12,3 +13,7 @@ class CreateUserOutput(BaseModel):
     age: int
     username: str
     
+class StatisticsOuput(BaseModel):
+    new_user_per_time: list
+    user_per_time_acc: list
+    average_user_age: float
