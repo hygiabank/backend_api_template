@@ -5,6 +5,7 @@ from ..exceptions import ResourceNotFound, ResourceAlreadyExists
 
 M = TypeVar('M', bound=Model)
 
+
 class BaseRepository:
     model: Type[Model]
     related_models: list[str] = []
@@ -13,31 +14,31 @@ class BaseRepository:
         return f"{self.model.__name__}"
 
     async def get_all(
-            self, 
+            self,
             *,
-            skip: int = 0, 
-            limit: int = 100, 
+            skip: int = 0,
+            limit: int = 100,
             filter: Optional[dict[str, Any]] = None
-        ) -> list[Model]:
+    ) -> list[Model]:
 
         items = self.model.all().prefetch_related(*self.related_models)
 
         if skip:
             items = items.offset(skip)
-        
+
         if limit:
-            items  = items.limit(limit)
+            items = items.limit(limit)
 
         if filter:
             items = items.filter(**filter)
-                
+
         return await items
 
     async def filter(self, **filter: dict[str, Any]) -> Model:
         try:
             query = self.model.get(**filter)
             if self.related_models:
-               query.prefetch_related(*self.related_models)
+                query.prefetch_related(*self.related_models)
             item = await query
 
         except DoesNotExist:
@@ -48,10 +49,10 @@ class BaseRepository:
     async def get(self, id: int) -> Model:
         try:
             query = self.model.get(id=id)
-            
+
             if self.related_models:
                 query.prefetch_related(*self.related_models)
-            
+
             item = await query
 
         except DoesNotExist:
@@ -66,7 +67,7 @@ class BaseRepository:
             print(f"DoesNotExist: {e}")
         except IntegrityError as e:
             raise ResourceAlreadyExists(self.__error_message())
-        
+
         return new_item
 
     async def update(self, id: int, **kwargs: dict[str, Any]) -> None:
@@ -77,7 +78,7 @@ class BaseRepository:
             raise ResourceNotFound(self.__error_message())
 
         return updated_item
-    
+
     async def delete(self, id: int) -> None:
         try:
             await self.model.filter(id=id).delete()
