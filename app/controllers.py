@@ -1,5 +1,6 @@
 from typing import Optional
 from app.database.user_repository import user_repository, User
+from app.database.task_repository import task_repository, Task
 from app.security import authenticate_user
 from app.exceptions import Unauthorized
 
@@ -57,3 +58,43 @@ async def authenticate(username: str, password: str) -> dict:
         "age": user.age,
         "username": user.username,
     }
+
+
+async def read_tasks(skip: int = 0, limit: int = 100, user_id: int = None) -> list[dict]:
+    dict_filter: dict = {"user__id": user_id}
+    tasks = await task_repository.get_all(skip=skip, limit=limit, filter=dict_filter)
+    return [
+        {
+            "id": task.id,
+            "name": task.name,
+            "description": task.description,
+        } for task in tasks
+    ]
+    
+async def create_task(**kwargs) -> dict:
+    task = await task_repository.create(**kwargs)
+    return {
+        "id": task.id,
+        "name": task.name,
+        "description": task.description
+    }
+    
+    
+async def read_task(id: int, user_id: int) -> dict:
+    task = await task_repository.get(id=id, user_id=user_id)
+    return {
+        "id": task.id,
+        "name": task.name,
+        "description": task.description
+    }
+    
+async def update_task(id: int, user_id: int, **kwargs) -> dict:
+    task = await task_repository.update(id=id, user_id=user_id, **kwargs)
+    return {
+        "id": task.id,
+        "name": task.name,
+        "description": task.description
+    }
+    
+async def delete_task(id: int, user_id: int) -> None:
+    return await task_repository.delete(id=id, user_id=user_id)
