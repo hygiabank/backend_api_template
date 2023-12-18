@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends
 from .base_repo import BaseRepository
 from .schema_factory import PydanticModels, create_schemas
 
+
 class DefaultCRUDParameters:
     @staticmethod
     async def get_all(skip: int = 0, limit: int = 100, filter_dict: Optional[dict] = None):
@@ -40,8 +41,7 @@ def create_rest_router(
         repo: Type[BaseRepository],
         schemas: PydanticModels = None,
         params_parser: CRUDParameters = CRUDParameters
-        ) -> APIRouter:
-    
+) -> APIRouter:
     router = APIRouter()
 
     model = repo.model
@@ -51,25 +51,28 @@ def create_rest_router(
         schemas = create_schemas(model, schemas)
 
     @router.get("/")
-    async def read_all(repo_instance: BaseRepository = Depends(repo), params = Depends(params_parser.GET_ALL)) -> list[schemas.read]:
+    async def read_all(repo_instance: BaseRepository = Depends(repo), params=Depends(params_parser.GET_ALL)) -> list[
+        schemas.read]:
         return await repo_instance.get_all(**params)
-        
+
     @router.get("/{%s_id}" % model_name)
-    async def read(repo_instance: BaseRepository = Depends(repo), params = Depends(params_parser.GET)) -> schemas.read:
+    async def read(repo_instance: BaseRepository = Depends(repo), params=Depends(params_parser.GET)) -> schemas.read:
         return await repo_instance.get(**params)
 
     @router.post("/")
-    async def create(input: schemas.create, repo_instance: BaseRepository = Depends(repo), params = Depends(params_parser.POST)) -> schemas.read:
+    async def create(input: schemas.create, repo_instance: BaseRepository = Depends(repo),
+                     params=Depends(params_parser.POST)) -> schemas.read:
         new_item = await repo_instance.create(**params)
         return schemas.read.model_validate(new_item)
 
     @router.put("/{%s_id}" % model_name)
-    async def update(input: schemas.update, repo_instance: BaseRepository = Depends(repo), params = Depends(params_parser.PUT)) -> schemas.read:
+    async def update(input: schemas.update, repo_instance: BaseRepository = Depends(repo),
+                     params=Depends(params_parser.PUT)) -> schemas.read:
         updated_item = await repo_instance.update(**params)
         return schemas.read.model_validate(updated_item)
 
     @router.delete("/{%s_id}" % model_name)
-    async def delete(repo_instance: BaseRepository = Depends(repo), params = Depends(params_parser.DELETE)) -> None:
+    async def delete(repo_instance: BaseRepository = Depends(repo), params=Depends(params_parser.DELETE)) -> None:
         await repo_instance.delete(**params)
 
     return router

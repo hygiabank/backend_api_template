@@ -3,6 +3,7 @@ from app.database.user_repository import user_repository, User
 from app.security import authenticate_user
 from app.exceptions import Unauthorized
 
+
 async def create_user(**kwargs) -> dict:
     new_user = await user_repository.create(**kwargs)
     return {
@@ -11,6 +12,7 @@ async def create_user(**kwargs) -> dict:
         "age": new_user.age,
         "username": new_user.username,
     }
+
 
 async def read_user(id: int) -> dict:
     user = await user_repository.get(id=id)
@@ -21,6 +23,7 @@ async def read_user(id: int) -> dict:
         "username": user.username,
     }
 
+
 async def update_user(id: str, **kwargs) -> dict:
     updated_user = await user_repository.update(id=id, **kwargs)
     return {
@@ -30,8 +33,10 @@ async def update_user(id: str, **kwargs) -> dict:
         "username": updated_user.username,
     }
 
+
 async def delete_user(id: str) -> None:
     return await user_repository.delete(id=id)
+
 
 async def read_users(skip: int = 0, limit: int = 100, filter_dict: Optional[dict] = None) -> list[dict]:
     users = await user_repository.get_all(skip=skip, limit=limit, filter=filter_dict)
@@ -44,13 +49,14 @@ async def read_users(skip: int = 0, limit: int = 100, filter_dict: Optional[dict
         } for user in users
     ]
 
+
 async def authenticate(username: str, password: str) -> dict:
     user = await User.get(username=username)
     if not user:
         raise Unauthorized("Invalid username")
     print(password)
     authenticate_user(password, user.password)
-    
+
     return {
         "id": str(user.id),
         "name": user.name,
