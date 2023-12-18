@@ -35,10 +35,11 @@ def create_rest_router() -> APIRouter:
         # Validação de senha
         if not is_valid_password(input.password):
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                                detail="A senha deve conter letras, números e caracteres especiais")
+                                detail="Para sua segurança, crie uma senha com uma mistura de letras maiúsculas"
+                                       " e minúsculas, números e símbolos especiais.")
 
         hashed_password = hash_password(input.password)
-        new_user = await create_user(name=input.name, age=input.age, username=input.username, password=hashed_password)
+        new_user = await create_user(name=input.name, age=input.age, username=input.username, password=hashed_password, cpf=input.cpf)
 
         return new_user
 
