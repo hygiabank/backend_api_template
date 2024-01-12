@@ -12,7 +12,7 @@ class ProcessTimeMiddleware(BaseHTTPMiddleware):
         process_time = time.time() - start_time
         process_time = process_time * 1000
         process_time = round(process_time, 2)
-        logging.info(f"\nRequest: {request.url.path} completed in {process_time} miliseconds")
+        logging.info(f"\nRequest: {request.url.path} completed in {process_time} milliseconds")
         return response
     
 
