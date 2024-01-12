@@ -57,3 +57,17 @@ docker compose up -d backend
 ## Visit the Docs for Reference
 
 http://localhost:8000/docs
+
+
+## Run Unit Tests
+First, it is necessary to install all the dev dependencies.
+
+```bash
+pip install -r requirements.txt -r requirements-dev.txt
+```
+
+With all the dev dependencies installed, it is possible to run the Pytest:
+
+```bash
+pytest -vv --durations=10 tests/
+```

@@ -1,7 +1,9 @@
-from typing import TypeVar, Type, Optional, Any
-from tortoise.models import Model
+from typing import Any, Optional, Type, TypeVar
+
 from tortoise.exceptions import DoesNotExist, IntegrityError
-from ..exceptions import ResourceNotFound, ResourceAlreadyExists
+from tortoise.models import Model
+
+from ..exceptions import ResourceAlreadyExists, ResourceNotFound
 
 M = TypeVar('M', bound=Model)
 
@@ -58,6 +60,11 @@ class BaseRepository:
             raise ResourceNotFound(self.__error_message())
 
         return item
+    
+    async def get_by_username(self, username: str) -> Model | None:
+        query = self.model.get(username=username)
+        return await query
+
 
     async def create(self, **kwargs: dict[str, Any]) -> Model:
         try:
